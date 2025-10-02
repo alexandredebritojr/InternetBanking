@@ -19,7 +19,7 @@ Desenvolver a API do Sistema de Caixa de Banco da Vindi, permitindo:
 
 ### 1. Clone o Repositório
 ```bash
-git clone [<url-do-repositorio>](https://github.com/alexandredebritojr/InternetBanking.git)
+git clone https://github.com/alexandredebritojr/InternetBanking.git
 cd InternetBanking
 ```
 
