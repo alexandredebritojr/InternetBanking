@@ -1,0 +1,6 @@
+@InternetBanking.Api_HostAddress = http://localhost:5139
+
+GET {{InternetBanking.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
