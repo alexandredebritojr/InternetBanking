@@ -1,78 +1,96 @@
-# 🏦 Sistema de Caixa de Banco
+# Internet Banking API
 
-Sistema bancário desenvolvido em .NET 8 seguindo os princípios da Clean Architecture, permitindo o cadastro de contas e transferências entre contas bancárias.
+API do Sistema de Caixa de Banco - Desenvolvida em .NET 8 com Clean Architecture.
 
-## 🎯 Objetivo do Projeto
-
-Desenvolver a API do Sistema de Caixa de Banco da Vindi, permitindo:
-- ✅ Cadastro de contas bancárias
-- ✅ Consulta de contas cadastradas
-- ✅ Inativação de contas
-- ✅ Transferências entre contas
-
-## 🚀 Como Executar o Projeto
-
-### Pré-requisitos
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [SQL Server LocalDB](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb) (incluído no Visual Studio)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) ou [VS Code](https://code.visualstudio.com/)
-
-### 1. Clone o Repositório
-```bash
-git clone https://github.com/alexandredebritojr/InternetBanking.git
-cd InternetBanking
-```
-
-### 2. Restaure as Dependências
-```bash
-dotnet restore
-```
-
-### 3. Execute o Projeto
-```bash
-# Navegue até a pasta da API
-cd InternetBanking.Api
-
-# Execute a aplicação
-dotnet run
-```
-
-### 4. Acesse a Aplicação
-- **API**: `https://localhost:7000` ou `http://localhost:5000`
-- **Swagger/OpenAPI**: `https://localhost:7000` (documentação interativa)
-
-## 📋 Funcionalidades Implementadas
+## 📋 Funcionalidades
 
 ### 1. Cadastro de Contas Bancárias
-- **Endpoint**: `POST /api/accounts`
-- **Funcionalidades**:
-  - Nome e documento obrigatórios
-  - Documento único (não permite duplicatas)
-  - Saldo inicial de R$ 1.000,00 (bonificação)
-  - Data de abertura registrada automaticamente
-  - Status inicial como "Ativa"
+- Cadastro de novas contas para clientes
+- Validação de dados obrigatórios (nome e documento)
+- Verificação de unicidade do documento
+- Saldo inicial de R$ 1.000,00 (bonificação)
+- Registro automático da data de abertura
 
 ### 2. Consulta de Contas
-- **Endpoint**: `GET /api/accounts`
-- **Funcionalidades**:
-  - Listagem de todas as contas
-  - Filtros por nome (parcial), documento ou status
-  - Retorna: nome, documento, saldo, data de abertura e status
+- Listagem de contas cadastradas
+- Filtros por nome, documento ou status
+- Retorna: nome, documento, saldo, data de abertura e status
 
 ### 3. Inativação de Conta
-- **Endpoint**: `PUT /api/accounts/document/{document}/deactivate`
-- **Funcionalidades**:
-  - Desativa conta por documento
-  - Preserva dados históricos
-  - Registra log de auditoria
+- Desativação de contas por documento
+- Preservação de dados históricos
+- Log de auditoria
 
-### 4. Transferências entre Contas
-- **Endpoint**: `POST /api/transfers`
-- **Funcionalidades**:
-  - Transferência entre contas ativas
-  - Validação de saldo suficiente
-  - Transação atômica (débito/crédito)
-  - Log de auditoria
+### 4. Transferências
+- Transferências entre contas ativas
+- Validação de saldo suficiente
+- Transações atômicas (débito/crédito)
+- Log de auditoria
+
+## 🚀 Como Executar
+
+### Pré-requisitos
+- .NET 8 SDK
+- SQL Server LocalDB (ou SQLite para desenvolvimento)
+
+### Passos
+1. Clone o repositório
+2. Navegue até a pasta do projeto
+3. Restaure as dependências:
+   ```bash
+   dotnet restore
+   ```
+4. Execute a aplicação:
+   ```bash
+   dotnet run --project InternetBanking.Api
+   ```
+5. Acesse a documentação da API em: `https://localhost:7000` (Swagger)
+
+## 📚 Documentação da API
+
+### Endpoints Principais
+
+#### Contas
+- `POST /api/accounts` - Cadastrar nova conta
+- `GET /api/accounts` - Listar contas (com filtros)
+- `GET /api/accounts/{id}` - Buscar conta por ID
+- `GET /api/accounts/document/{document}` - Buscar conta por documento
+- `PUT /api/accounts/document/{document}/deactivate` - Desativar conta
+
+#### Transferências
+- `POST /api/transfers` - Realizar transferência
+- `GET /api/transfers/account/{document}` - Listar transações da conta
+
+#### Auditoria
+- `GET /api/audit` - Listar logs de auditoria (com filtros)
+
+### Exemplos de Uso
+
+#### Cadastrar Conta
+```json
+POST /api/accounts
+{
+  "clientName": "João Silva",
+  "document": "12345678901"
+}
+```
+
+#### Realizar Transferência
+```json
+POST /api/transfers
+{
+  "fromDocument": "12345678901",
+  "toDocument": "98765432100",
+  "amount": 500.00,
+  "description": "Transferência de teste"
+}
+```
+
+#### Filtrar Contas
+```
+GET /api/accounts?name=João&status=1
+GET /api/accounts?document=123
+```
 
 ## 🧪 Testes
 
@@ -91,147 +109,44 @@ dotnet test InternetBanking.IntegrationTests
 dotnet test
 ```
 
-## 📊 Exemplos de Uso
+## 🏗️ Arquitetura
 
-### 1. Cadastrar uma Conta
-```bash
-curl -X POST "https://localhost:7000/api/accounts" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "clientName": "João Silva",
-    "document": "12345678901"
-  }'
-```
+O projeto segue os princípios da Clean Architecture:
 
-### 2. Listar Contas
-```bash
-curl -X GET "https://localhost:7000/api/accounts"
-```
+- **Domain**: Entidades, enums e interfaces
+- **Application**: Serviços, DTOs e validadores
+- **Infrastructure**: Repositórios, banco de dados e configurações
+- **API**: Controllers e configuração da aplicação
 
-### 3. Realizar Transferência
-```bash
-curl -X POST "https://localhost:7000/api/transfers" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "fromDocument": "12345678901",
-    "toDocument": "98765432100",
-    "amount": 500.00,
-    "description": "Transferência de teste"
-  }'
-```
+## 🔧 Configuração
 
-### 4. Desativar Conta
-```bash
-curl -X PUT "https://localhost:7000/api/accounts/document/12345678901/deactivate"
-```
+### Banco de Dados
+- **Produção**: SQL Server
+- **Desenvolvimento**: SQL Server
+- **Testes**: SQLite em memória
 
-## 🏗️ Arquitetura do Projeto
+### Connection Strings
+Configuradas em `appsettings.json` e `appsettings.Development.json`
 
-```
-InternetBanking/
-├── InternetBanking.Api/           # Camada de apresentação (Controllers)
-├── InternetBanking.Application/   # Camada de aplicação (Services, DTOs)
-├── InternetBanking.Domain/        # Camada de domínio (Entities, Interfaces)
-├── InternetBanking.Infrastructure/ # Camada de infraestrutura (Repositories, DB)
-├── InternetBanking.UnitTests/     # Testes unitários
-└── InternetBanking.IntegrationTests/ # Testes de integração
-```
+## 📊 Cobertura de Testes
+- Testes unitários para entidades, serviços e validadores
+- Testes de integração para endpoints da API
+- Mocks para isolamento de dependências
 
-### Tecnologias Utilizadas
-- **.NET 8**: Framework principal
-- **Entity Framework Core**: ORM para acesso a dados
-- **SQL Server**: Banco de dados principal
-- **FluentValidation**: Validação de dados
-- **Swagger/OpenAPI**: Documentação da API
-- **xUnit**: Framework de testes
-- **FluentAssertions**: Assertions mais legíveis
-- **Moq**: Mocking para testes
+## 🛡️ Segurança
+- Validação rigorosa de entrada
+- Tratamento de exceções
+- Logs de auditoria para ações importantes
+- Transações atômicas para operações críticas
 
-## 🔧 Configuração do Banco de Dados
-
-### SQL Server LocalDB (Desenvolvimento)
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=InternetBankingDb_Dev;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False"
-  }
-}
-```
-
-### SQLite (Alternativa)
-Se preferir usar SQLite, a aplicação detectará automaticamente e criará um arquivo `banking.db`.
-
-## 📈 Cobertura de Testes
-
-O projeto inclui:
-- **Testes Unitários**: Entidades, serviços, validadores
-- **Testes de Integração**: Endpoints da API
-- **Mocks**: Para isolamento de dependências
-
-### Executar Testes com Cobertura
-```bash
-dotnet test --collect:"XPlat Code Coverage"
-```
-
-## 🛡️ Segurança e Validações
-
-### Validações Implementadas
-- ✅ Nome do cliente obrigatório (máx. 200 caracteres)
-- ✅ Documento obrigatório, único e apenas números
-- ✅ Valores de transferência positivos
-- ✅ Contas devem estar ativas para operações
-- ✅ Saldo suficiente para transferências
-
-### Logs de Auditoria
+## 📝 Logs de Auditoria
 Todas as ações importantes são registradas:
 - Criação de contas
 - Desativação de contas
 - Transferências realizadas
 
-## 🔍 Troubleshooting
-
-### Problema: Erro de Conexão com Banco
-**Solução**: Verifique se o SQL Server LocalDB está instalado e funcionando:
-```bash
-sqllocaldb info
-sqllocaldb start MSSQLLocalDB
-```
-
-### Problema: Porta em Uso
-**Solução**: Altere as portas em `launchSettings.json` ou mate o processo:
-```bash
-# Windows
-netstat -ano | findstr :7000
-taskkill /PID <PID> /F
-
-# Linux/Mac
-lsof -ti:7000 | xargs kill -9
-```
-
-### Problema: Testes Falhando
-**Solução**: Execute os testes individualmente:
-```bash
-dotnet test InternetBanking.UnitTests --verbosity normal
-dotnet test InternetBanking.IntegrationTests --verbosity normal
-```
-
-## 📚 Documentação Adicional
-
-- [Documentação da API](./InternetBanking.Api/README.md)
-- [Swagger/OpenAPI](https://localhost:7000) (quando a aplicação estiver rodando)
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
----
-
-**Desenvolvido para o Desafio Técnico da Vindi** 🚀
+## 🔍 Validações
+- Nome do cliente obrigatório (máx. 200 caracteres)
+- Documento obrigatório, único e apenas números
+- Valores de transferência positivos
+- Contas devem estar ativas para operações
