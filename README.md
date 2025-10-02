@@ -1,4 +1,4 @@
-# 🏦 Sistema de Caixa de Banco da Vindi
+# 🏦 Sistema de Caixa de Banco
 
 Sistema bancário desenvolvido em .NET 8 seguindo os princípios da Clean Architecture, permitindo o cadastro de contas e transferências entre contas bancárias.
 
